@@ -1,0 +1,710 @@
+if game.CoreGui:FindFirstChild("SHub") then
+    game.CoreGui.SHub:Destroy()
+end
+
+wait()
+
+-- Instances:
+local library = loadstring(game:HttpGet("https://pastebin.com/raw/SVK0j6p4"))()
+local venyx = library.new("SHub", 5013109572)
+local Universal = venyx:addPage("Universal", 5012544693)
+local UniversalFrame = Universal:addSection("Universal Scripts")
+
+game.CoreGui.SHub.Main.Visible = false
+--Anti Kick
+
+local get = getrawmetatable(game)
+local oldnamecall = get.__namecall
+
+setreadonly(get, false)
+
+get.__namecall = newcclosure(function(Self,...)
+    local method = getnamecallmethod()
+    if Self == game.Players.LocalPlayer and tostring(method) == "Kick" then
+        return
+    end
+    return oldnamecall(Self,...)
+end)
+
+local mt = getrawmetatable(game)
+local old = mt.__namecall
+local protect = newcclosure or protect_function
+
+if not protect then
+	print("Incompatible Exploit Warning", "Your exploit does not support protection against stack trace errors, resulting to fallback function. Try using KRNL or Fluxus")
+	protect = function(f) return f end
+end
+
+setreadonly(mt, false)
+mt.__namecall = protect(function(self, ...)
+	local method = getnamecallmethod()
+	if method == "Kick" then
+		wait(9e9)
+			return
+		end
+	return old(self, ...)
+end)
+hookfunction(game.Players.LocalPlayer.Kick,protect(function() wait(9e9) end))
+
+
+local themes = {
+	Background = Color3.fromRGB(24, 24, 24), 
+	Glow = Color3.fromRGB(0, 0, 0), 
+	Accent = Color3.fromRGB(50, 50, 50), 
+	LightContrast = Color3.fromRGB(20, 20, 20), 
+	DarkContrast = Color3.fromRGB(14, 14, 14),  
+	TextColor = Color3.fromRGB(255, 255, 255)
+}
+
+UniversalFrame:addSlider("Walk Speed", tonumber(game.Players.LocalPlayer.Character.Humanoid.WalkSpeed), 0, 100, function(value)
+    
+        game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = value
+    
+end)
+
+UniversalFrame:addSlider("Jump Power", tonumber(game.Players.LocalPlayer.Character.Humanoid.JumpPower), 0, 100, function(value)
+   
+        game.Players.LocalPlayer.Character.Humanoid.JumpPower = value
+    
+end)
+
+UniversalFrame:addButton("Noclip", function()
+    noclip = false
+game:GetService('RunService').Stepped:connect(function()
+if noclip then
+game.Players.LocalPlayer.Character.Humanoid:ChangeState(11)
+end
+end)
+plr = game.Players.LocalPlayer
+mouse = plr:GetMouse()
+mouse.KeyDown:connect(function(key)
+
+if key == "n" then
+noclip = not noclip
+game.Players.LocalPlayer.Character.Humanoid:ChangeState(11)
+end
+end)
+end)
+
+UniversalFrame:addButton("Fly", function()
+repeat wait()
+    until game.Players.LocalPlayer and game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:findFirstChild("Torso") and game.Players.LocalPlayer.Character:findFirstChild("Humanoid")
+local mouse = game.Players.LocalPlayer:GetMouse()
+repeat wait() until mouse
+local plr = game.Players.LocalPlayer
+local torso = plr.Character.Torso
+local flying = true
+local deb = true
+local ctrl = {f = 0, b = 0, l = 0, r = 0}
+local lastctrl = {f = 0, b = 0, l = 0, r = 0}
+local maxspeed = 50
+local speed = 0
+
+function Fly()
+local bg = Instance.new("BodyGyro", torso)
+bg.P = 9e4
+bg.maxTorque = Vector3.new(9e9, 9e9, 9e9)
+bg.cframe = torso.CFrame
+local bv = Instance.new("BodyVelocity", torso)
+bv.velocity = Vector3.new(0,0.1,0)
+bv.maxForce = Vector3.new(9e9, 9e9, 9e9)
+repeat wait()
+plr.Character.Humanoid.PlatformStand = true
+if ctrl.l + ctrl.r ~= 0 or ctrl.f + ctrl.b ~= 0 then
+speed = speed+.5+(speed/maxspeed)
+if speed > maxspeed then
+speed = maxspeed
+end
+elseif not (ctrl.l + ctrl.r ~= 0 or ctrl.f + ctrl.b ~= 0) and speed ~= 0 then
+speed = speed-1
+if speed < 0 then
+speed = 0
+end
+end
+if (ctrl.l + ctrl.r) ~= 0 or (ctrl.f + ctrl.b) ~= 0 then
+bv.velocity = ((game.Workspace.CurrentCamera.CoordinateFrame.lookVector * (ctrl.f+ctrl.b)) + ((game.Workspace.CurrentCamera.CoordinateFrame * CFrame.new(ctrl.l+ctrl.r,(ctrl.f+ctrl.b)*.2,0).p) - game.Workspace.CurrentCamera.CoordinateFrame.p))*speed
+lastctrl = {f = ctrl.f, b = ctrl.b, l = ctrl.l, r = ctrl.r}
+elseif (ctrl.l + ctrl.r) == 0 and (ctrl.f + ctrl.b) == 0 and speed ~= 0 then
+bv.velocity = ((game.Workspace.CurrentCamera.CoordinateFrame.lookVector * (lastctrl.f+lastctrl.b)) + ((game.Workspace.CurrentCamera.CoordinateFrame * CFrame.new(lastctrl.l+lastctrl.r,(lastctrl.f+lastctrl.b)*.2,0).p) - game.Workspace.CurrentCamera.CoordinateFrame.p))*speed
+else
+bv.velocity = Vector3.new(0,0.1,0)
+end
+bg.cframe = game.Workspace.CurrentCamera.CoordinateFrame * CFrame.Angles(-math.rad((ctrl.f+ctrl.b)*50*speed/maxspeed),0,0)
+until not flying
+ctrl = {f = 0, b = 0, l = 0, r = 0}
+lastctrl = {f = 0, b = 0, l = 0, r = 0}
+speed = 0
+bg:Destroy()
+bv:Destroy()
+plr.Character.Humanoid.PlatformStand = false
+end
+mouse.KeyDown:connect(function(key)
+if key:lower() == "f" then
+if flying then flying = false
+else
+flying = true
+Fly()
+end
+elseif key:lower() == "w" then
+ctrl.f = 1
+elseif key:lower() == "s" then
+ctrl.b = -1
+elseif key:lower() == "a" then
+ctrl.l = -1
+elseif key:lower() == "d" then
+ctrl.r = 1
+end
+end)
+mouse.KeyUp:connect(function(key)
+if key:lower() == "w" then
+ctrl.f = 0
+elseif key:lower() == "s" then
+ctrl.b = 0
+elseif key:lower() == "a" then
+ctrl.l = 0
+elseif key:lower() == "d" then
+ctrl.r = 0
+end
+end)
+Fly()
+end)
+
+local scripthub = Universal:addSection("Script Hub")
+
+scripthub:addButton("CTRL Click To TP", function()
+    local UIS = game:GetService("UserInputService")
+
+local Player = game.Players.LocalPlayer
+local Mouse = Player:GetMouse()
+
+
+function GetCharacter()
+   return game.Players.LocalPlayer.Character
+end
+
+function Teleport(pos)
+   local Char = GetCharacter()
+   if Char then
+       Char:MoveTo(pos)
+   end
+end
+
+
+UIS.InputBegan:Connect(function(input)
+   if input.UserInputType == Enum.UserInputType.MouseButton1 and UIS:IsKeyDown(Enum.KeyCode.LeftControl) then
+       Teleport(Mouse.Hit.p)
+   end
+end)
+end)
+
+scripthub:addButton("FE Script Maker KIT", function()
+    -- Gui to Lua
+    -- Version: 3.2
+    
+    -- Instances:
+    
+    local ScreenGui = Instance.new("ScreenGui")
+    local Frame = Instance.new("Frame")
+    local UICorner = Instance.new("UICorner")
+    local darkdex = Instance.new("TextButton")
+    local UICorner_2 = Instance.new("UICorner")
+    local rspy = Instance.new("TextButton")
+    local UICorner_3 = Instance.new("UICorner")
+    local close = Instance.new("TextButton")
+    local UICorner_4 = Instance.new("UICorner")
+    local TextLabel = Instance.new("TextLabel")
+    
+    --Properties:
+    
+    ScreenGui.Parent = game.CoreGui
+    ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    ScreenGui.DisplayOrder = 9999999999999
+    
+    Frame.Parent = ScreenGui
+    Frame.BackgroundColor3 = Color3.fromRGB(132, 132, 132)
+    Frame.Position = UDim2.new(0.217524335, 0, 0.313570499, 0)
+    Frame.Size = UDim2.new(0.217783511, 0, 0.237154156, 0)
+    Frame.Active = true
+    Frame.Draggable = true
+    
+    UICorner.Parent = Frame
+    
+    darkdex.Name = "darkdex"
+    darkdex.Parent = Frame
+    darkdex.BackgroundColor3 = Color3.fromRGB(59, 59, 59)
+    darkdex.Position = UDim2.new(0.126028672, 0, 0.208639711, 0)
+    darkdex.Size = UDim2.new(0.734265745, 0, 0.2890625, 0)
+    darkdex.Font = Enum.Font.GothamSemibold
+    darkdex.Text = "Dark Dex"
+    darkdex.TextColor3 = Color3.fromRGB(255, 255, 255)
+    darkdex.TextSize = 20.000
+    
+    UICorner_2.Parent = darkdex
+    
+    rspy.Name = "rspy"
+    rspy.Parent = Frame
+    rspy.BackgroundColor3 = Color3.fromRGB(59, 59, 59)
+    rspy.Position = UDim2.new(0.126028672, 0, 0.574448526, 0)
+    rspy.Size = UDim2.new(0.734265745, 0, 0.2890625, 0)
+    rspy.Font = Enum.Font.GothamSemibold
+    rspy.Text = "Remote Spy"
+    rspy.TextColor3 = Color3.fromRGB(255, 255, 255)
+    rspy.TextSize = 16.000
+    
+    UICorner_3.Parent = rspy
+    
+    close.Name = "close"
+    close.Parent = Frame
+    close.BackgroundColor3 = Color3.fromRGB(193, 0, 0)
+    close.Position = UDim2.new(0.872928083, 0, 0.0588236488, 0)
+    close.Size = UDim2.new(0.0979020968, 0, 0.111805558, 0)
+    close.Font = Enum.Font.SourceSans
+    close.Text = "X"
+    close.TextColor3 = Color3.fromRGB(255, 255, 255)
+    close.TextScaled = true
+    close.TextSize = 14.000
+    close.TextWrapped = true
+    
+    UICorner_4.CornerRadius = UDim.new(0, 5)
+    UICorner_4.Parent = close
+    
+    TextLabel.Parent = Frame
+    TextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    TextLabel.BackgroundTransparency = 1.000
+    TextLabel.Size = UDim2.new(0.786982238, 0, 0.166666672, 0)
+    TextLabel.Font = Enum.Font.GothamSemibold
+    TextLabel.Text = "FE Script Maker KIT"
+    TextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    TextLabel.TextSize = 12.000
+    TextLabel.TextStrokeColor3 = Color3.fromRGB(255, 255, 255)
+    TextLabel.TextWrapped = true
+    
+    --Scripts:
+    
+    close.MouseButton1Click:Connect(function()
+    	ScreenGui:Destroy()
+    end)
+    
+    darkdex.MouseButton1Click:Connect(function()
+    	if game:GetService'CoreGui':FindFirstChild'Dex'then game:GetService'CoreGui'.Dex:Destroy()end;math.randomseed(tick())local a={}for b=48,57 do table.insert(a,string.char(b))end;for b=65,90 do table.insert(a,string.char(b))end;for b=97,122 do table.insert(a,string.char(b))end;function RandomCharacters(c)if c>0 then return RandomCharacters(c-1)..a[math.random(1,#a)]else return''end end;local d=game:GetObjects('rbxassetid://3567096419')[1]d.Name=RandomCharacters(math.random(5,20))d.Parent=game:GetService('CoreGui')local function e(f,g)local function h(i,j)local k={}local l={script=j}local m={}m.__index=function(n,o)if l[o]==nil then return getfenv()[o]else return l[o]end end;m.__newindex=function(n,o,p)if l[o]==nil then getfenv()[o]=p else l[o]=p end end;setmetatable(k,m)setfenv(i,k)return i end;local function q(j)if j.ClassName=='Script'or j.ClassName=='LocalScript'then spawn(function()h(loadstring(j.Source,'='..j:GetFullName()),j)()end)end;for b,r in pairs(j:GetChildren())do q(r)end end;q(f)end;e(d)
+    end)
+    
+    rspy.MouseButton1Click:Connect(function()
+    	loadstring(game:HttpGet("https://github.com/exxtremestuffs/SimpleSpySource/raw/master/SimpleSpy.lua"))()
+    end) 
+end)
+
+if game.PlaceId == 12109643 then
+    venyx:Notify("SHub", "Loading..")
+    wait(2)
+    venyx:Notify("SHub", "Loaded!")
+    wait(1)
+    venyx:Notify("SHub", "Searching game..")
+    wait(4)
+    venyx:Notify("SHub", "Game Found: Fencing")
+    game.CoreGui.SHub.Main.Visible = true
+    local Fencing = venyx:addPage("Fencing", 5012544693)
+    local FencingFrame = Fencing:addSection("Fencing")
+    FencingFrame:addToggle("Block Spam", nil, function(value)
+        if value == true then
+            _G.b = false
+
+            while true do
+                if _G.b then return end
+                wait(0.1)
+                game.Workspace.Handle.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+
+                game.Workspace.Handle.CanCollide = false
+                game.Workspace.Handle.Transparency = 2
+
+            
+                for _,v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+                    if v:IsA("Tool") and v.Name == "Spray" then
+                        game.Players.LocalPlayer.Character.Humanoid:EquipTool(v)
+                    end
+                end
+
+                for _,v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
+                    if v:IsA("Tool") and v.Name == "Spray" then
+                        v.Handle.Mesh:Destroy()
+                        v.Parent = workspace
+                    end
+                end
+            end
+            venyx:Notify("Notifications", "Spamming Blocks")
+        elseif value == false then
+            _G.b = true
+
+            while true do
+                if _G.b then return end
+                wait(0.1)
+                game.Workspace.Handle.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+
+                game.Workspace.Handle.CanCollide = false
+                game.Workspace.Handle.Transparency = 2
+
+            
+                for _,v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+                    if v:IsA("Tool") then
+                        game.Players.LocalPlayer.Character.Humanoid:EquipTool(v)
+                    end
+                end
+
+                for _,v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
+                    if v:IsA("Tool") and v.Name == "Spray" then
+                        v.Handle.Mesh:Destroy()
+                        v.Parent = workspace
+            
+                    end
+                end
+            end
+            venyx:Notify("Notifications", "Spamming Stopped")
+        end
+    end)
+    FencingFrame:addButton("Drop Hats", function()
+        for i,v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
+            if v:IsA("Accessory") then
+                v.Parent = workspace
+            end
+        end
+    end)
+    FencingFrame:addButton("Drop Hats W/O Meshes", function()
+        for i,v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
+            if v:IsA("Accessory") then
+                local mesh = v.Handle:FindFirstChild("Mesh")
+                local meshp = v.Handle:FindFirstChild("MeshPart")
+                local specialm = v.Handle:FindFirstChild("SpecialMesh")
+                if mesh then
+                    mesh:Destroy()
+                    v.Parent = workspace
+                elseif meshp then
+                    meshp:Destroy()
+                    v.Parent = workspace
+                elseif specialm then
+                    specialm:Destroy()
+                    v.Parent = workspace
+                end
+            end
+        end
+    end)
+elseif game.PlaceId == 5188662261 then
+    venyx:Notify("SHub", "Loading..")
+    wait(2)
+    venyx:Notify("SHub", "Loaded!")
+    wait(1)
+    venyx:Notify("SHub", "Searching game..")
+    wait(4)
+    venyx:Notify("SHub", "Game Found: Undercover Trouble")
+    game.CoreGui.SHub.Main.Visible = true
+    local Undercover = venyx:addPage("Undercover", 5012544693)
+    local UndercoverFrame = Undercover:addSection("Seeker")
+    UndercoverFrame:addToggle("Hiders ESP", nil, function(value)
+        if value == true then
+            local gui = Instance.new("BillboardGui");
+            gui.Name = "";
+            gui.AlwaysOnTop = true;
+            gui.LightInfluence = 0;
+            gui.Size = UDim2.new(1.75, 0, 1.75, 0);
+            local frame = Instance.new("Frame", gui);
+            frame.BackgroundColor3 = Color3.fromRGB(0, 255, 0);
+            frame.Size = UDim2.new(1, 0, 1, 0);
+            frame.BorderSizePixel = 0;
+            frame.BorderColor3 = Color3.fromRGB(0, 0, 0);
+            local gi = gui:Clone();
+            local body = frame:Clone();
+            body.Parent = gi;
+            body.BackgroundColor3 = Color3.fromRGB(0, 0, 0);
+            for i,v in pairs(game.Teams.Hiders:GetPlayers()) do
+                if v.Name ~= game.Players.LocalPlayer.Name then
+                    gui:Clone().Parent = v.Character.Head
+                end
+            end
+            venyx:Notify("Notifications", "ESP ON")
+        elseif value == false then
+            for i, v in pairs(game.Players:GetChildren()) do
+		        for i, a in pairs(v.Character.Head:GetChildren()) do
+			        if a.ClassName == "BillboardGui" then
+				        a:remove()
+			        end
+                end
+	        end
+            venyx:Notify("Notifications", "ESP OFF")
+        end
+    end)
+    UndercoverFrame:addToggle("Switch Spam", nil, function(value)
+        if value == true then
+            venyx:Notify("Notifications", "Spam Start")
+            getgenv().spam = true
+            while wait(.5) do
+                if getgenv().spam then
+                    for i,v in pairs(game.Teams.Hiders:GetPlayers()) do
+                        local args = {
+                            [1] = v.Character.Head
+                        }
+
+                        game:GetService("ReplicatedStorage").Communication.Interaction.SwitchCharacter:InvokeServer(unpack(args))
+                    end
+                end
+            end
+        elseif value == false then
+            venyx:Notify("Notifications", "Spam Stop")
+            getgenv().spam = false
+            while wait(.5) do
+                if getgenv().spam then
+                    for i,v in pairs(game.Teams.Hiders:GetPlayers()) do
+                        local args = {
+                            [1] = v.Character.Head
+                        }
+
+                        game:GetService("ReplicatedStorage").Communication.Interaction.SwitchCharacter:InvokeServer(unpack(args))
+                    end
+                end
+            end
+        end
+    end)
+elseif game.PlaceId == 698448212 then
+    venyx:Notify("SHub", "Loading..")
+    wait(2)
+    venyx:Notify("SHub", "Loaded!")
+    wait(1)
+    venyx:Notify("SHub", "Searching game..")
+    wait(4)
+    venyx:Notify("SHub", "Game Found: RoBeats")
+    game.CoreGui.SHub.Main.Visible = true
+    local Robeats = venyx:addPage("Robeats", 5012544693)
+    local RobeatsFrame = Robeats:addSection("Robeats")
+    RobeatsFrame:addButton("Robeats AutoPlay", function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/notclosure/new-years/main/happ.lua"))()
+    end)
+elseif game.PlaceId == 5098929086 then
+    venyx:Notify("SHub", "Loading..")
+    wait(2)
+    venyx:Notify("SHub", "Loaded!")
+    wait(1)
+    venyx:Notify("SHub", "Searching game..")
+    wait(4)
+    venyx:Notify("SHub", "Game Found: TAPPING SIMULATOR")
+    game.CoreGui.SHub.Main.Visible = true
+    local TappingSimulator = venyx:addPage("Tapping", 5012544693)
+    local TappingSimulatorFrame = TappingSimulator:addSection("Auto")
+    getgenv().farm = false
+    getgenv().rebirth = false
+    TappingSimulatorFrame:addToggle("Auto Click", nil, function(value)
+        if value == true and getgenv().farm == false then
+            getgenv().farm = true
+            while wait() do
+                if getgenv().farm == true then
+                    local args = {
+                        [1] = false
+                    }
+
+                game:GetService("ReplicatedStorage").PlayerClick:FireServer(unpack(args))
+                end
+            end
+        elseif value == false then
+            if getgenv().farm == true then
+                getgenv().farm = false
+            end
+        end
+    end)
+    TappingSimulatorFrame:addToggle("Auto Rebirth", nil, function(value)
+        if value == true and getgenv().rebirth == false then
+            getgenv().rebirth = true
+            while wait() do
+                if getgenv().rebirth then
+                    if game:GetService("Players").LocalPlayer.PlayerGui.RebirthPopup.RebirthFrame.ScrollingFrameBG.ScrollingFrame.ScrollingFrame["5.00M"].ImageColor3 == Color3.fromRGB(246, 177, 18) then
+                        local args = {
+                            [1] = 5000000
+                        }
+
+                        game:GetService("ReplicatedStorage").PlayerRebirth:FireServer(unpack(args))
+                    end
+                end
+            end
+        elseif value == false and getgenv().rebirth == true then
+            getgenv().rebirth = false
+        end
+    end)
+elseif game.PlaceId == 2726456994 then
+    venyx:Notify("SHub", "Loading..")
+    wait(2)
+    venyx:Notify("SHub", "Loaded!")
+    wait(1)
+    venyx:Notify("SHub", "Searching game..")
+    wait(4)
+    venyx:Notify("SHub", "Game Found: Click To Grow")
+    game.CoreGui.SHub.Main.Visible = true
+    local AutoFarm = venyx:addPage("Auto Farm", 5012544693)
+    local AutoFarmFrame = AutoFarm:addSection("Farm")
+    _G.autofarm = false
+    _G.prestige = false
+    AutoFarmFrame:addToggle("Auto Click", nil, function(value)
+        if value == true then
+            if _G.autofarm == false then
+                _G.autofarm = true
+                while wait() do
+                    if _G.autofarm then
+                        workspace.Events.AddPoints:FireServer()
+                    end
+                end
+            end
+        elseif value == false and _G.autofarm == true then
+            _G.autofarm = false
+        end
+    end)
+    AutoFarmFrame:addToggle("Auto Prestige", nil, function(value)
+        if value == true and _G.prestige == false then
+            _G.prestige = true
+            while wait(1) do
+                if _G.prestige then
+                    workspace.Events.Prestige:FireServer()
+                end
+            end
+        elseif value == false and _G.prestige == true then
+            _G.prestige = false
+        end
+    end)
+else
+    venyx:Notify("SHub", "Loading..")
+    wait(2)
+    venyx:Notify("SHub", "Loaded!")
+    wait(1)
+    venyx:Notify("SHub", "Searching game..")
+    wait(4)
+    venyx:Notify("SHub", "Universal")
+    game.CoreGui.SHub.Main.Visible = true
+end
+
+local ESP = venyx:addPage("ESP", 5012544693)
+local ESPFrame = ESP:addSection("ESP")
+local gui = Instance.new("BillboardGui");
+gui.Name = "";
+gui.AlwaysOnTop = true;
+gui.LightInfluence = 0;
+gui.Size = UDim2.new(1.75, 0, 1.75, 0);
+local frame = Instance.new("Frame", gui);
+frame.BackgroundColor3 = Color3.fromRGB(0, 255, 0);
+frame.Size = UDim2.new(1, 0, 1, 0);
+frame.BorderSizePixel = 0;
+frame.BorderColor3 = Color3.fromRGB(0, 0, 0);
+local gi = gui:Clone();
+local body = frame:Clone();
+body.Parent = gi;
+body.BackgroundColor3 = Color3.fromRGB(0, 0, 0);
+ESPFrame:addToggle("Enable ESP", nil, function(value)
+    if value == true then
+        for i,v in pairs(game.Players:GetPlayers()) do
+            if v.Name ~= game.Players.LocalPlayer.Name then
+                gui:Clone().Parent = v.Character.Head
+            end
+        end
+        game.Players.PlayerAdded:Connect(function(plr)
+            gui:Clone().Parent = plr.Character.Head
+        end)
+    elseif value == false then
+        for i, v in pairs(game.Players:GetChildren()) do
+	        for i, a in pairs(v.Character.Head:GetChildren()) do
+			    if a.ClassName == "BillboardGui" then
+				    a:remove()
+			    end
+		    end
+	    end
+    end
+end)
+
+_G.AIMBOT = false
+_G.TEAMCHECK = false
+local camera = workspace.CurrentCamera
+local localPlayer = game:GetService("Players").LocalPlayer
+
+local Aimbot = venyx:addPage("Aimbot", 5012544693)
+local AimbotFrame = Aimbot:addSection("Aimbot")
+AimbotFrame:addToggle("Aimbot Enabled", nil, function(value)
+    if value == true then
+        if _G.AIMBOT == false then
+            _G.AIMBOT = true
+
+            local function player()
+                local target = nil
+                local dist = math.huge
+                
+                for i, v in pairs(game:GetService("Players"):GetPlayers()) do
+                    if v.Name ~= localPlayer.Name then
+                        if v.Character and v.Character:FindFirstChild("Head") and _G.AIMBOT and v.Character.Humanoid.Health > 0 and v.Character:FindFirstChild("Head") then
+                            local magnitude = (v.Character.HumanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).magnitude
+
+                            if magnitude < dist then
+                                target = v
+                                dist = magnitude
+                            end
+                        end
+                    end
+                end
+                return target
+            end
+
+            local UIS = game:GetService("UserInputService")
+            local aim = false
+
+            game:GetService("RunService").RenderStepped:Connect(function()
+                if aim then
+                    camera.CFrame = CFrame.new(camera.CFrame.Position,player().Character.Head.Position)
+                end
+            end)
+
+            UIS.InputBegan:Connect(function(inp)
+                if inp.UserInputType == Enum.UserInputType.MouseButton2 then
+                    aim = true
+                end
+            end)
+
+            UIS.InputEnded:Connect(function(inp)
+                if inp.UserInputType == Enum.UserInputType.MouseButton2 then
+                    aim = false
+                end
+            end)
+        end
+    elseif value == false then
+        if _G.AIMBOT == true then
+            _G.AIMBOT = false
+        end
+    end
+end)
+
+local Credits = venyx:addPage("Credits", 5012544693)
+local CreditsFrame = Credits:addSection("Credits")
+CreditsFrame:addButton("SHub made by Blue Duck#9891")
+CreditsFrame:addButton("Copy Discord", function()
+    if Clipboard ~= nil then
+        Clipboard.set("Blue Duck#9891")
+    elseif Synapse ~= nil then
+        Synapse:Copy("Blue Duck#9891")
+    elseif setclipboard ~= nil then
+        setclipboard("Blue Duck#9891")
+    end
+end)
+local UIDesigner = Credits:addSection("UI Designer")
+UIDesigner:addButton("UI made by Blue Duck#9891")
+local Scripter = Credits:addSection("Scripter")
+Scripter:addButton("SHub was scripted by Blue Duck#9891")
+
+local Settings = venyx:addPage("Settings", 5012544693)
+local SettingsFrame = Settings:addSection("Settings")
+SettingsFrame:addButton("Rejoin", function()
+    venyx:Notify("Notifications", "Rejoining")
+    wait(1)
+    game:GetService('TeleportService'):TeleportToPlaceInstance(game.PlaceId, game.JobId, game.Players.LocalPlayer)
+end)
+SettingsFrame:addButton("Switch Server", function()
+    venyx:Notify("Switching Server")
+    wait(1)
+    game:GetService("TeleportService"):Teleport(game.PlaceId, game.Players.LocalPlayer)
+end)
+SettingsFrame:addButton("Destroy UI", function()
+    game.CoreGui.SHub:Destroy()
+end)
+SettingsFrame:addKeybind("Keybind", Enum.KeyCode.Equals, function()
+    venyx:toggle()
+end)
+
+venyx:SelectPage(venyx.pages[1], true)
